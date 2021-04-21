@@ -13,14 +13,14 @@ variable "mbip_flavor_name" {
 variable "num_mbips" {
   description = "Number of mbip instances to create"
 }
-variable "password" {
-  description = "The Password to login with."
-  sensitive = true
+variable "tenant_name" {
+  description = "The Name of the Tenant or Project to login with."
 }
 variable "user_name" {
   description = "The Username to login with"
   sensitive = true
 }
-variable "tenant_name" {
-  description = "The Name of the Tenant or Project to login with."
+variable "password" {
+  description = "The Password to login with."
+  sensitive = true
 }
