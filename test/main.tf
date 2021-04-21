@@ -1,10 +1,5 @@
 terraform {
-  backend "azurerm" {
-    resource_group_name  = "f5pdiqs01-rg"
-    storage_account_name = "manovatfstate22173"
-    container_name       = "mbiq-demo-tfstate"
-    key                  = "mbiq-demos-mbip-demo.tfstate"
-  }
+  backend "local" {}
 }
 
 module "mbip" {

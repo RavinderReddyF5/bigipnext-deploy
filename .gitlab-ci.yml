@@ -1,0 +1,57 @@
+variables:
+  MBIQ_CI_DOCKER_DIR: "artifactory.f5net.com/f5-bigiq-docker/mbiq-tools"
+  MBIQ_CI_DOCKER_TERRAFORM: "${MBIQ_CI_DOCKER_DIR}/terraform-runner:${TERRAFORM_RUNNER_VERSION}"
+  MBIQ_CI_TERRATEST_VERSION: "0.32.23"
+
+default:
+  image: "${MBIQ_CI_DOCKER_TERRAFORM}"
+  retry:
+    max: 1
+    when:
+      - stuck_or_timeout_failure
+      - runner_system_failure
+
+workflow:
+  rules:
+    # For merge requests, create a pipeline
+    - if: '$CI_MERGE_REQUEST_IID'
+    # For `master` branch, create a pipeline
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+    # For tags, create a pipeline
+    - if: '$CI_COMMIT_TAG'
+    # For web ui, create a pipeline
+    - if: '$CI_PIPELINE_SOURCE == "web"'
+
+stages:
+  - static-analysis
+  - test
+
+go-lint:
+  stage: static-analysis
+  script:
+    - make lint
+
+test:
+  stage: test
+  variables:
+    MBIQ_CI_TEST_OUTPUT_DIR: ${CI_PROJECT_DIR}/logs
+    MBIQ_CI_TEST_OUTPUT_FILE: ${CI_PROJECT_DIR}/logs/test_output.log
+    OUTPUT_LOG_FILE: ${MBIQ_CI_TEST_OUTPUT_DIR}/${MBIQ_CI_TEST_OUTPUT_FILE}
+  script:
+    - wget -nv -O /usr/local/bin/terratest_log_parser https://github.com/gruntwork-io/terratest/releases/download/v${MBIQ_CI_TERRATEST_VERSION}/terratest_log_parser_linux_amd64
+    - chmod +x /usr/local/bin/terratest_log_parser
+    - export TF_VAR_admin_network_name="AdminNetwork2"
+    - export TF_VAR_mbip_name_prefix="${CI_PROJECT_NAME}-${CI_PIPELINE_ID}"
+    - export TF_VAR_mbip_image_name="BIG-IP-MA-ALL-2021.04.0.5.0-0.99.5"
+    - export TF_VAR_mbip_flavor_name="m1.large"
+    - export TF_VAR_tenant_name="verizon-dcd"
+    - export TF_VAR_user_name="${MBIQ_DEMO_VIO_ACCT_USR}"
+    - export TF_VAR_password="${MBIQ_DEMO_VIO_ACCT_PWD}"
+    - make test TEST_OUTPUT_FILE=${MBIQ_CI_TEST_OUTPUT_FILE}
+    - terratest_log_parser -testlog ${MBIQ_CI_TEST_OUTPUT_FILE} -outputdir ${MBIQ_CI_TEST_OUTPUT_DIR}
+  artifacts:
+    when: always
+    paths:
+      - ${MBIQ_CI_TEST_OUTPUT_DIR}/*
+    reports:
+      junit: ${MBIQ_CI_TEST_OUTPUT_DIR}/report.xml

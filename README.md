@@ -50,3 +50,20 @@ module "mbip" {
 Name | Description | Type
 ---- | ----------- | ----
 admin_ipv4_addresses | The list of created VMs admin ipv4 addresses | list
+
+## Testing
+
+The golang terratest package is used for testing this terraform module. In order to run the tests locally, you must have
+go installed and you must create a .env file in the `test` directory that configures the following environment variables
+or set all of these environment variables in your environment:
+
+TF_VAR_admin_network_name="AdminNetwork2"
+TF_VAR_mbip_name_prefix="cb-terraform-mbiq-test"
+TF_VAR_mbip_image_name="BIG-IP-MA-ALL-2021.04.0.5.0-0.99.5"
+TF_VAR_mbip_flavor_name="m1.large"
+TF_VAR_num_mbips=1
+TF_VAR_tenant_name="verizon-dcd"
+TF_VAR_user_name="<VIO username>"
+TF_VAR_password="<VIO password>"
+
+The tests can then be run using the `make test` command.
