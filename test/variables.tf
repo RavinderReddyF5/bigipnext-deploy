@@ -6,6 +6,7 @@ variable "mbip_name_prefix" {
 }
 variable "mbip_image_name" {
   description = "The image name in VIO."
+  default = "latest"
 }
 variable "mbip_flavor_name" {
   description = "The flavor preset in VIO."

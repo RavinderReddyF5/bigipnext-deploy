@@ -1,7 +1,10 @@
-TEST_OUTPUT_FILE=$(PWD)/logs
+SHELL := /bin/bash
+export SHELLOPTS := errexit:pipefail
+
+TEST_OUTPUT_FILE?=$(PWD)/logs
 
 lint: ## Run go fmt and golangci-lint linters
-	go fmt ./test
+	goimports -w ./test
 	golangci-lint run ./test
 	tflint
 	tflint ./test

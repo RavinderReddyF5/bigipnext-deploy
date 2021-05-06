@@ -2,7 +2,7 @@
 
 Terraform module that creates and configures mBIP VMs on OpenStack(VIO).
 
-This module creats mBIP VMs with admin network interface on VIO. you need terraform version 0.14.0 or newer to use this module.
+This module creats mBIP VMs with admin network interface on VIO. you need terraform version 0.15.0 or newer to use this module.
 
 ## Usage
 
@@ -17,7 +17,7 @@ terraform {
 }
 
 module "mbip" {
-  source             = "git@gitswarm.f5net.com:terraform/modules/openstack/mbip.git?ref=v0.0.1"
+  source             = "git@gitswarm.f5net.com:terraform/modules/openstack/mbip.git?ref=v0.1.0"
 
   user_name          = var.user_name
   tenant_name        = var.tenant_name
@@ -38,7 +38,7 @@ module "mbip" {
 | auth_url | The Identity authentication URL | string | `"https://vio-sea.pdsea.f5net.com:5000/v3"` | no |
 | availability_zone | Openstack availability zone | string | `"nova"` | no |
 | mbip_name_prefix | Name prefix for created mbip prefix | string | - | yes |
-| mbip_image_name | The image name for mbip present in VIO | string | - | yes |
+| mbip_image_name | The image name for mbip present in VIO | string | `"latest"` | no |
 | mbip_flavor_name | The flavor name for mbip present in VIO | string | - | yes |
 | num_mbips | Number of MBIP instances to create | string | - | yes |
 | password | The password for VIO user account | string | - | yes |
@@ -57,9 +57,9 @@ The golang terratest package is used for testing this terraform module. In order
 go installed and you must create a .env file in the `test` directory that configures the following environment variables
 or set all of these environment variables in your environment:
 
+TF_VAR_auth_url="https://vio-sea.pdsea.f5net.com:5000/v3"
 TF_VAR_admin_network_name="AdminNetwork2"
 TF_VAR_mbip_name_prefix="cb-terraform-mbiq-test"
-TF_VAR_mbip_image_name="BIG-IP-MA-ALL-2021.04.0.5.0-0.99.5"
 TF_VAR_mbip_flavor_name="m1.large"
 TF_VAR_num_mbips=1
 TF_VAR_tenant_name="verizon-dcd"

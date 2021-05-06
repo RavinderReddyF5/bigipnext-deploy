@@ -43,9 +43,11 @@ test:
     - wget -nv -O /usr/local/bin/terratest_log_parser https://github.com/gruntwork-io/terratest/releases/download/v${MBIQ_CI_TERRATEST_VERSION}/terratest_log_parser_linux_amd64
     - chmod +x /usr/local/bin/terratest_log_parser
   script:
+    - export TF_VAR_auth_url="https://vio-sea.pdsea.f5net.com:5000/v3"
     - export TF_VAR_admin_network_name="AdminNetwork2"
     - export TF_VAR_mbip_name_prefix="${CI_PROJECT_NAME}-${CI_PIPELINE_ID}"
-    - export TF_VAR_mbip_image_name="BIG-IP-MA-ALL-2021.04.0.5.0-0.99.5"
+    - export TF_VAR_num_mbips=1
+    - export TF_VAR_mbip_image_name="latest"
     - export TF_VAR_mbip_flavor_name="m1.large"
     - export TF_VAR_tenant_name="verizon-dcd"
     - export TF_VAR_user_name="${MBIQ_DEMO_VIO_ACCT_USR}"
@@ -59,7 +61,6 @@ test:
       - ${MBIQ_CI_TEST_OUTPUT_DIR}/*
     reports:
       junit: ${MBIQ_CI_TEST_OUTPUT_DIR}/report.xml
-
 
 .release-job:
   rules:
