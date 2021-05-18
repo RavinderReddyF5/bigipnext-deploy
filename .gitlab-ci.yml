@@ -52,6 +52,8 @@ test:
     - export TF_VAR_tenant_name="verizon-dcd"
     - export TF_VAR_user_name="${MBIQ_DEMO_VIO_ACCT_USR}"
     - export TF_VAR_password="${MBIQ_DEMO_VIO_ACCT_PWD}"
+    - export TF_VAR_network_port_name="[\"mgmt-2\"]"
+    - export TF_VAR_network_port_ip="10.145.64.156"
     - make test TEST_OUTPUT_FILE=${MBIQ_CI_TEST_OUTPUT_FILE}
   after_script:
     - terratest_log_parser -testlog ${MBIQ_CI_TEST_OUTPUT_FILE} -outputdir ${MBIQ_CI_TEST_OUTPUT_DIR}

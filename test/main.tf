@@ -12,4 +12,5 @@ module "mbip" {
   mbip_image_name    = var.mbip_image_name
   mbip_flavor_name   = var.mbip_flavor_name
   admin_network_name = var.admin_network_name
+  network_port_name  = var.network_port_name
 }

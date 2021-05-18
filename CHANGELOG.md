@@ -1,3 +1,6 @@
+# [0.2.0](https://gitswarm.f5net.com/terraform/modules/openstack/mbip/-/compare/v0.1.0...v0.2.0) (2021-05-17)
+- Add support for specifying netwrok port name in order to use fixed ip
+
 # [0.1.0](https://gitswarm.f5net.com/terraform/modules/openstack/mbip/-/compare/v0.0.1...v0.1.0) (2021-05-05)
 - Add support for specifying 'latest' instead of a specific image name
 
