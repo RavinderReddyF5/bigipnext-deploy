@@ -1,5 +1,11 @@
 variable "admin_network_name" {
   description = "The public network name in VIO."
+  default = ""
+}
+variable "network_port_name" {
+  description = "List of network port name to use"
+  type = list(string)
+  default = []
 }
 variable "auth_url" {
   description = "The Identity authentication URL"

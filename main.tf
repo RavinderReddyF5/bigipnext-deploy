@@ -32,7 +32,13 @@ data "openstack_images_image_v2" "latest_mbip_image" {
 }
 
 data "openstack_networking_network_v2" "admin_network" {
+  count = var.admin_network_name == "" ? 0 : 1
   name = var.admin_network_name
+}
+
+data "openstack_networking_port_v2" "network_port" {
+  count = length(var.network_port_name)
+  name = var.network_port_name[count.index]
 }
 
 resource "openstack_compute_instance_v2" "mbip" {
@@ -44,6 +50,7 @@ resource "openstack_compute_instance_v2" "mbip" {
   flavor_name       = var.mbip_flavor_name
   security_groups   = []
   network {
-    uuid = data.openstack_networking_network_v2.admin_network.id
+    uuid = length(var.network_port_name) == 0 ? data.openstack_networking_network_v2.admin_network.0.id : null
+    port = length(var.network_port_name) == 0 ? null : data.openstack_networking_port_v2.network_port[count.index].id
   }
 }
