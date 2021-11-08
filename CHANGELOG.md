@@ -1,3 +1,6 @@
+# [0.3.0](https://gitswarm.f5net.com/terraform/modules/openstack/mbip/-/compare/v0.2.0...v0.3.0) (2021-11-07)
+- Update required terraform version to 1.0.7
+
 # [0.2.0](https://gitswarm.f5net.com/terraform/modules/openstack/mbip/-/compare/v0.1.0...v0.2.0) (2021-05-17)
 - Add support for specifying netwrok port name in order to use fixed ip
 
