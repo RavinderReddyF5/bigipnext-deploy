@@ -40,7 +40,7 @@ test:
     MBIQ_CI_TEST_OUTPUT_FILE: ${CI_PROJECT_DIR}/logs/test_output.log
     OUTPUT_LOG_FILE: ${MBIQ_CI_TEST_OUTPUT_DIR}/${MBIQ_CI_TEST_OUTPUT_FILE}
   before_script:
-    - wget -nv -O /usr/local/bin/terratest_log_parser https://github.com/gruntwork-io/terratest/releases/download/v${MBIQ_CI_TERRATEST_VERSION}/terratest_log_parser_linux_amd64
+    - wget -nv -O /usr/local/bin/terratest_log_parser https://sea.artifactory.f5net.com/artifactory/generic-github-remote/gruntwork-io/terratest/releases/download/v${MBIQ_CI_TERRATEST_VERSION}/terratest_log_parser_linux_amd64
     - chmod +x /usr/local/bin/terratest_log_parser
   script:
     - export TF_VAR_auth_url="https://vio-sea.pdsea.f5net.com:5000/v3"
