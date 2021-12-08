@@ -45,6 +45,8 @@ test:
   script:
     - export TF_VAR_auth_url="https://vio-sea.pdsea.f5net.com:5000/v3"
     - export TF_VAR_admin_network_name="AdminNetwork2"
+    - export TF_VAR_internal_network_name="vlan1010"
+    - export TF_VAR_external_network_name="vlan1011"
     - export TF_VAR_mbip_name_prefix="${CI_PROJECT_NAME}-${CI_PIPELINE_ID}"
     - export TF_VAR_num_mbips=1
     - export TF_VAR_mbip_image_name="latest"
