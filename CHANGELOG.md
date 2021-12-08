@@ -1,5 +1,5 @@
 # [0.3.1](https://gitswarm.f5net.com/terraform/modules/openstack/mbip/-/compare/v0.3.0...v0.3.1) (2021-12-07)
-- Add two additional network interfaces
+- Add two additional network interfaces for internal and external networks
 
 # [0.3.0](https://gitswarm.f5net.com/terraform/modules/openstack/mbip/-/compare/v0.2.0...v0.3.0) (2021-11-07)
 - Update required terraform version to 1.0.7
