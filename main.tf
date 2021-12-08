@@ -53,4 +53,10 @@ resource "openstack_compute_instance_v2" "mbip" {
     uuid = length(var.network_port_name) == 0 ? data.openstack_networking_network_v2.admin_network.0.id : null
     port = length(var.network_port_name) == 0 ? null : data.openstack_networking_port_v2.network_port[count.index].id
   }
+  network {
+    name = var.internal_network_name
+  }
+  network {
+    name = var.external_network_name
+  }
 }

@@ -17,16 +17,18 @@ terraform {
 }
 
 module "mbip" {
-  source             = "git@gitswarm.f5net.com:terraform/modules/openstack/mbip.git?ref=v0.1.0"
+  source                = "git@gitswarm.f5net.com:terraform/modules/openstack/mbip.git?ref=v0.1.0"
 
-  user_name          = var.user_name
-  tenant_name        = var.tenant_name
-  password           = var.password
-  num_mbips          = var.num_mbips
-  mbip_name_prefix   = var.mbip_name_prefix
-  mbip_image_name    = var.mbip_image_name
-  mbip_flavor_name   = var.mbip_flavor_name
-  admin_network_name = var.admin_network_name
+  user_name             = var.user_name
+  tenant_name           = var.tenant_name
+  password              = var.password
+  num_mbips             = var.num_mbips
+  mbip_name_prefix      = var.mbip_name_prefix
+  mbip_image_name       = var.mbip_image_name
+  mbip_flavor_name      = var.mbip_flavor_name
+  admin_network_name    = var.admin_network_name
+  internal_network_name = var.internal_network_name
+  external_network_name = var.external_network_name
 }
 ```
 
@@ -35,6 +37,8 @@ module "mbip" {
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
 | admin_network_name | The public admin network name in VIO. | string | - | yes |
+| internal_network_name | The network name in VIO to use for the internal network. | string | - | yes |
+| external_network_name | The network name in VIO to use for the external network. | string | - | yes |
 | auth_url | The Identity authentication URL | string | `"https://vio-sea.pdsea.f5net.com:5000/v3"` | no |
 | availability_zone | Openstack availability zone | string | `"nova"` | no |
 | mbip_name_prefix | Name prefix for created mbip prefix | string | - | yes |
@@ -59,7 +63,9 @@ or set all of these environment variables in your environment:
 
 TF_VAR_auth_url="https://vio-sea.pdsea.f5net.com:5000/v3"
 TF_VAR_admin_network_name="AdminNetwork2"
-TF_VAR_mbip_name_prefix="cb-terraform-mbiq-test"
+TF_VAR_internal_network_name="vlan1010"
+TF_VAR_external_network_name="vlan1011"
+TF_VAR_mbip_name_prefix="cb-terraform-mbip-test"
 TF_VAR_mbip_flavor_name="m1.large"
 TF_VAR_num_mbips=1
 TF_VAR_tenant_name="verizon-dcd"

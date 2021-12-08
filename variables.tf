@@ -7,6 +7,12 @@ variable "network_port_name" {
   type = list(string)
   default = []
 }
+variable "internal_network_name" {
+  description = "Name of the VIO network to use as the BIG-IP MA internal network"
+}
+variable "external_network_name" {
+  description = "Name of the VIO network to use as the BIG-IP MA external network"
+}
 variable "auth_url" {
   description = "The Identity authentication URL"
   default = "https://vio-sea.pdsea.f5net.com:5000/v3"

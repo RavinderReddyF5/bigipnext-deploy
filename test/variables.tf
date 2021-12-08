@@ -2,6 +2,14 @@ variable "admin_network_name" {
   description = "The public network name in VIO."
   default = ""
 }
+variable "internal_network_name" {
+  description = "The network name in VIO to use for the internal network."
+  default = ""
+}
+variable "external_network_name" {
+  description = "The network name in VIO to use for the external network."
+  default = ""
+}
 variable "network_port_name" {
   description = "List of network port name to use"
   type = list(string)
