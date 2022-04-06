@@ -41,6 +41,15 @@ data "openstack_networking_port_v2" "network_port" {
   name = var.network_port_name[count.index]
 }
 
+resource "openstack_networking_floatingip_v2" "cluster_ip" {
+  count       = var.create_cluster_ip == "yes" ? 1 : 0
+  pool        = var.mbip_ha_pool_name
+}
+
+output "cluster_ip" {
+  value = openstack_networking_floatingip_v2.cluster_ip.*.address
+}
+
 resource "openstack_compute_instance_v2" "mbip" {
   count             = var.num_mbips
   region            = ""

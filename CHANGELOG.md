@@ -1,3 +1,6 @@
+# [0.3.2](https://gitswarm.f5net.com/terraform/modules/openstack/mbip/-/compare/v0.3.1...v0.3.2) (2022-04-06)
+- Add Option to Create Cluster IP along with mBIP instances for HA
+
 # [0.3.1](https://gitswarm.f5net.com/terraform/modules/openstack/mbip/-/compare/v0.3.0...v0.3.1) (2021-12-07)
 - Add two additional network interfaces for internal and external networks
 
