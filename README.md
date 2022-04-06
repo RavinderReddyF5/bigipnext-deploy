@@ -48,6 +48,8 @@ module "mbip" {
 | password | The password for VIO user account | string | - | yes |
 | user_name | The user name for VIO user account | string | - | yes |
 | tenant_name | The Name of the Tenant or Project to login with | string | - | yes |
+| create_cluster_ip | Flag to indicate creation of Cluster IP | string | `"no"` | no |
+| mbip_ha_pool_name | Name of the Pool used for Cluster IP creation | string | `"k8s-ext"` | no |
 
 ## Output
 

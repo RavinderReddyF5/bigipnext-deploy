@@ -45,3 +45,11 @@ variable "user_name" {
 variable "tenant_name" {
   description = "The Name of the Tenant or Project to login with."
 }
+variable "create_cluster_ip" {
+  description = "Flag to indicate whether or not to create a new Cluster IP in VIO."
+  default = "no"
+}
+variable "mbip_ha_pool_name" {
+  description = "The Name of Pool to be used to create Cluster IP in VIO."
+  default = "k8s-ext"
+}
