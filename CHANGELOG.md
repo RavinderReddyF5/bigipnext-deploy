@@ -1,3 +1,7 @@
+# [0.4.0](https://gitswarm.f5net.com/terraform/modules/openstack/mbip/-/compare/v0.3.2...v0.4.0) (2022-06-08)
+- Add support for specifying the BIG-IP Next release to use when finding the latest image
+- Upgrade to terraform-runner version 3.0.1 to get the new VIO client that fetches the new BIG-IP Next k3s images
+
 # [0.3.2](https://gitswarm.f5net.com/terraform/modules/openstack/mbip/-/compare/v0.3.1...v0.3.2) (2022-04-06)
 - Add Option to Create Cluster IP along with mBIP instances for HA
 
@@ -8,7 +12,7 @@
 - Update required terraform version to 1.0.7
 
 # [0.2.0](https://gitswarm.f5net.com/terraform/modules/openstack/mbip/-/compare/v0.1.0...v0.2.0) (2021-05-17)
-- Add support for specifying netwrok port name in order to use fixed ip
+- Add support for specifying network port name in order to use fixed ip
 
 # [0.1.0](https://gitswarm.f5net.com/terraform/modules/openstack/mbip/-/compare/v0.0.1...v0.1.0) (2021-05-05)
 - Add support for specifying 'latest' instead of a specific image name

@@ -19,6 +19,7 @@ var (
 		`TF_VAR_auth_url`,
 		`TF_VAR_admin_network_name`,
 		`TF_VAR_mbip_name_prefix`,
+		`TF_VAR_mbip_release`,
 		`TF_VAR_mbip_image_name`,
 		`TF_VAR_mbip_flavor_name`,
 		`TF_VAR_num_mbips`,
@@ -61,8 +62,9 @@ func getOldestImage(t *testing.T, envVars map[string]string) string {
 		t.Fatalf("Failed to log in to VIO: %s", err)
 	}
 
-	t.Logf("Querying available MBIP images")
+	t.Logf("Querying available BIG-IP Next images for the 0.7.0 release")
 
+	image.UpdateRegexesForRelease("0.7.0")
 	mbipImages, err := imageManager.GetAllImages(&image.ListOpts{
 		Regex:          image.MBIPRegex,
 		VersionFunc:    image.MBIPVersion,
@@ -70,11 +72,11 @@ func getOldestImage(t *testing.T, envVars map[string]string) string {
 	})
 
 	if err != nil {
-		t.Fatalf("Failed to get list of MBIP images from VIO: %s", err)
+		t.Fatalf("Failed to get list of BIG-IP Next images from VIO: %s", err)
 	}
 
 	if len(mbipImages) <= 0 {
-		t.Fatal("No MBIP images found")
+		t.Fatal("No BIG-IP Next images found")
 	}
 
 	mbipImageName := mbipImages[0].Name
@@ -144,7 +146,7 @@ func TestTerraformSpecificMBIPImage(t *testing.T) {
 
 func TestTerraformFixedIpMBIP(t *testing.T) {
 	envVars := getEnvVars()
-	port_ips := strings.Split(envVars[`TF_VAR_network_port_ip`], ",")
+	portIps := strings.Split(envVars[`TF_VAR_network_port_ip`], ",")
 
 	terraformOptions := terraform.WithDefaultRetryableErrors(t, &terraform.Options{
 		TerraformDir: ".",
@@ -157,5 +159,5 @@ func TestTerraformFixedIpMBIP(t *testing.T) {
 
 	ips := terraform.OutputList(t, terraformOptions, "admin_ipv4_addresses")
 	assert.Len(t, ips, 1)
-	assert.Equal(t, port_ips[0], ips[0])
+	assert.Equal(t, portIps[0], ips[0])
 }
