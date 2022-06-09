@@ -1,8 +1,9 @@
-# OpenStack Modular BIG-IP(mBIP) Module
+# OpenStack BIG-IP Next Module
 
-Terraform module that creates and configures mBIP VMs on OpenStack(VIO).
+Terraform module that creates and configures BIG-IP Next VMs on OpenStack(VIO).
 
-This module creats mBIP VMs with admin network interface on VIO. you need terraform version 0.15.0 or newer to use this module.
+This module creates BIG-IP Next VMs with admin, internal, and external network interfaces on VIO. You need terraform
+version 1.0.7 or newer to use this module.
 
 ## Usage
 
@@ -23,6 +24,7 @@ module "mbip" {
   tenant_name           = var.tenant_name
   password              = var.password
   num_mbips             = var.num_mbips
+  mbip_release          = var.mbip_release
   mbip_name_prefix      = var.mbip_name_prefix
   mbip_image_name       = var.mbip_image_name
   mbip_flavor_name      = var.mbip_flavor_name
@@ -34,28 +36,29 @@ module "mbip" {
 
 ## Input
 
-| Name | Description | Type | Default | Required |
-|------|-------------|:----:|:-----:|:-----:|
-| admin_network_name | The public admin network name in VIO. | string | - | yes |
-| internal_network_name | The network name in VIO to use for the internal network. | string | - | yes |
-| external_network_name | The network name in VIO to use for the external network. | string | - | yes |
-| auth_url | The Identity authentication URL | string | `"https://vio-sea.pdsea.f5net.com:5000/v3"` | no |
-| availability_zone | Openstack availability zone | string | `"nova"` | no |
-| mbip_name_prefix | Name prefix for created mbip prefix | string | - | yes |
-| mbip_image_name | The image name for mbip present in VIO | string | `"latest"` | no |
-| mbip_flavor_name | The flavor name for mbip present in VIO | string | - | yes |
-| num_mbips | Number of MBIP instances to create | string | - | yes |
-| password | The password for VIO user account | string | - | yes |
-| user_name | The user name for VIO user account | string | - | yes |
-| tenant_name | The Name of the Tenant or Project to login with | string | - | yes |
-| create_cluster_ip | Flag to indicate creation of Cluster IP | string | `"no"` | no |
-| mbip_ha_pool_name | Name of the Pool used for Cluster IP creation | string | `"k8s-ext"` | no |
+| Name                  | Description                                              |  Type  |                   Default                   | Required |
+|-----------------------|----------------------------------------------------------|:------:|:-------------------------------------------:|:--------:|
+| admin_network_name    | The public admin network name in VIO.                    | string |                      -                      |   yes    |
+| internal_network_name | The network name in VIO to use for the internal network. | string |                      -                      |   yes    |
+| external_network_name | The network name in VIO to use for the external network. | string |                      -                      |   yes    |
+| auth_url              | The Identity authentication URL                          | string | `"https://vio-sea.pdsea.f5net.com:5000/v3"` |    no    |
+| availability_zone     | Openstack availability zone                              | string |                  `"nova"`                   |    no    |
+| mbip_name_prefix      | Name prefix for created mbip prefix                      | string |                      -                      |   yes    |
+| mbip_release          | The BIG-IP Next release to get the latest image for      | string |                      -                      |   yes    |
+| mbip_image_name       | The image name for mbip present in VIO                   | string |                 `"latest"`                  |    no    |
+| mbip_flavor_name      | The flavor name for mbip present in VIO                  | string |                      -                      |   yes    |
+| num_mbips             | Number of MBIP instances to create                       | string |                      -                      |   yes    |
+| password              | The password for VIO user account                        | string |                      -                      |   yes    |
+| user_name             | The user name for VIO user account                       | string |                      -                      |   yes    |
+| tenant_name           | The Name of the Tenant or Project to login with          | string |                      -                      |   yes    |
+| create_cluster_ip     | Flag to indicate creation of Cluster IP                  | string |                   `"no"`                    |    no    |
+| mbip_ha_pool_name     | Name of the Pool used for Cluster IP creation            | string |                 `"k8s-ext"`                 |    no    |
 
 ## Output
 
-Name | Description | Type
----- | ----------- | ----
-admin_ipv4_addresses | The list of created VMs admin ipv4 addresses | list
+| Name                 | Description                                  | Type |
+|----------------------|----------------------------------------------|------|
+| admin_ipv4_addresses | The list of created VMs admin ipv4 addresses | list |
 
 ## Testing
 
@@ -68,6 +71,7 @@ TF_VAR_admin_network_name="AdminNetwork2"
 TF_VAR_internal_network_name="vlan1010"
 TF_VAR_external_network_name="vlan1011"
 TF_VAR_mbip_name_prefix="cb-terraform-mbip-test"
+TF_VAR_mbip_release="0.7.0"
 TF_VAR_mbip_flavor_name="m1.large"
 TF_VAR_num_mbips=1
 TF_VAR_tenant_name="verizon-dcd"

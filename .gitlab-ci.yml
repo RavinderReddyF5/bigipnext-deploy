@@ -1,6 +1,6 @@
 variables:
   MBIQ_CI_DOCKER_DIR: "artifactory.f5net.com/f5-bigiq-docker/mbiq-tools"
-  MBIQ_CI_DOCKER_TERRAFORM: "${MBIQ_CI_DOCKER_DIR}/terraform-runner:${TERRAFORM_RUNNER_VERSION}"
+  MBIQ_CI_DOCKER_TERRAFORM: "${MBIQ_CI_DOCKER_DIR}/terraform-runner:3.0.1"
   MBIQ_CI_TERRATEST_VERSION: "0.32.23"
 
 default:
@@ -49,6 +49,7 @@ test:
     - export TF_VAR_external_network_name="vlan1011"
     - export TF_VAR_mbip_name_prefix="${CI_PROJECT_NAME}-${CI_PIPELINE_ID}"
     - export TF_VAR_num_mbips=1
+    - export TF_VAR_mbip_release="0.7.0"
     - export TF_VAR_mbip_image_name="latest"
     - export TF_VAR_mbip_flavor_name="m1.large"
     - export TF_VAR_tenant_name="verizon-dcd"

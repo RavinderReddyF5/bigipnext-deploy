@@ -9,6 +9,7 @@ module "mbip" {
   password              = var.password
   num_mbips             = var.num_mbips
   mbip_name_prefix      = var.mbip_name_prefix
+  mbip_release          = var.mbip_release
   mbip_image_name       = var.mbip_image_name
   mbip_flavor_name      = var.mbip_flavor_name
   admin_network_name    = var.admin_network_name

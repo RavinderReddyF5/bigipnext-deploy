@@ -21,7 +21,7 @@ provider "openstack" {
 data "external" "mbip_images" {
   count = var.mbip_image_name == "latest" ? 1 : 0
 
-  program = ["${path.module}/get_latest_image.sh", var.user_name, var.password, var.tenant_name]
+  program = ["${path.module}/get_latest_image.sh", var.user_name, var.password, var.tenant_name, var.mbip_release]
 }
 
 data "openstack_images_image_v2" "latest_mbip_image" {
@@ -33,17 +33,17 @@ data "openstack_images_image_v2" "latest_mbip_image" {
 
 data "openstack_networking_network_v2" "admin_network" {
   count = var.admin_network_name == "" ? 0 : 1
-  name = var.admin_network_name
+  name  = var.admin_network_name
 }
 
 data "openstack_networking_port_v2" "network_port" {
   count = length(var.network_port_name)
-  name = var.network_port_name[count.index]
+  name  = var.network_port_name[count.index]
 }
 
 resource "openstack_networking_floatingip_v2" "cluster_ip" {
-  count       = var.create_cluster_ip == "yes" ? 1 : 0
-  pool        = var.mbip_ha_pool_name
+  count = var.create_cluster_ip == "yes" ? 1 : 0
+  pool  = var.mbip_ha_pool_name
 }
 
 output "cluster_ip" {

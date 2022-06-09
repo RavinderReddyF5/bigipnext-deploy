@@ -24,6 +24,9 @@ variable "availability_zone" {
 variable "mbip_name_prefix" {
   description = "Name prefix for mbip instances"
 }
+variable "mbip_release" {
+  description = "The mbip release to get the latest image for"
+}
 variable "mbip_image_name" {
   description = "The image name in VIO."
   default = "latest"
