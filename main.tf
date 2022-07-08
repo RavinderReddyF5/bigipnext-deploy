@@ -1,19 +1,19 @@
 terraform {
-  required_version = "~> 1.0.7"
+  required_version = "~> 1.2.4"
 
   required_providers {
     openstack = {
       source  = "terraform-provider-openstack/openstack"
-      version = "~> 1.39.0"
+      version = "~> 1.47.0"
     }
   }
 }
 
 provider "openstack" {
-  user_name   = var.user_name
-  tenant_name = var.tenant_name
-  password    = var.password
   auth_url    = var.auth_url
+  user_name   = var.username
+  password    = var.password
+  tenant_name = var.tenant_name
   region      = ""
   insecure    = true
 }
@@ -21,7 +21,7 @@ provider "openstack" {
 data "external" "mbip_images" {
   count = var.mbip_image_name == "latest" ? 1 : 0
 
-  program = ["${path.module}/get_latest_image.sh", var.user_name, var.password, var.tenant_name, var.mbip_release]
+  program = ["${path.module}/get_latest_image.sh", var.username, var.password, var.tenant_name, var.mbip_release]
 }
 
 data "openstack_images_image_v2" "latest_mbip_image" {
@@ -33,21 +33,14 @@ data "openstack_images_image_v2" "latest_mbip_image" {
 
 data "openstack_networking_network_v2" "admin_network" {
   count = var.admin_network_name == "" ? 0 : 1
+
   name  = var.admin_network_name
 }
 
 data "openstack_networking_port_v2" "network_port" {
-  count = length(var.network_port_name)
-  name  = var.network_port_name[count.index]
-}
+  count = length(var.network_port_names)
 
-resource "openstack_networking_floatingip_v2" "cluster_ip" {
-  count = var.create_cluster_ip == "yes" ? 1 : 0
-  pool  = var.mbip_ha_pool_name
-}
-
-output "cluster_ip" {
-  value = openstack_networking_floatingip_v2.cluster_ip.*.address
+  name  = var.network_port_names[count.index]
 }
 
 resource "openstack_compute_instance_v2" "mbip" {
@@ -59,8 +52,8 @@ resource "openstack_compute_instance_v2" "mbip" {
   flavor_name       = var.mbip_flavor_name
   security_groups   = []
   network {
-    uuid = length(var.network_port_name) == 0 ? data.openstack_networking_network_v2.admin_network.0.id : null
-    port = length(var.network_port_name) == 0 ? null : data.openstack_networking_port_v2.network_port[count.index].id
+    uuid = length(var.network_port_names) == 0 ? data.openstack_networking_network_v2.admin_network.0.id : null
+    port = length(var.network_port_names) == 0 ? null : data.openstack_networking_port_v2.network_port[count.index].id
   }
   network {
     name = var.internal_network_name

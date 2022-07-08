@@ -1,58 +1,50 @@
+variable "auth_url" {
+  description = "The openstack identity authentication URL."
+  default = "https://vio-sea.pdsea.f5net.com:5000/v3"
+}
+variable "username" {
+  description = "The username to log in with."
+  sensitive = true
+}
+variable "password" {
+  description = "The password to log in with."
+  sensitive = true
+}
+variable "tenant_name" {
+  description = "The name of the tenant to create BIG-IP Next instances in."
+}
+variable "availability_zone" {
+  description = "The availability zone to create BIG-IP Next instances in."
+  default = "nova"
+}
+variable "mbip_flavor_name" {
+  description = "The openstack flavor to use when creating the BIG-IP Next instances."
+}
 variable "admin_network_name" {
-  description = "The public network name in VIO."
+  description = "The name of the openstack network to use as the management network."
   default = ""
 }
-variable "network_port_name" {
-  description = "List of network port name to use"
+variable "network_port_names" {
+  description = "List of network port names to attach to BIG-IP Next instances for static IP addresses."
   type = list(string)
   default = []
 }
 variable "internal_network_name" {
-  description = "Name of the VIO network to use as the BIG-IP MA internal network"
+  description = "The name of the openstack network to use as the BIG-IP Next internal network."
 }
 variable "external_network_name" {
-  description = "Name of the VIO network to use as the BIG-IP MA external network"
-}
-variable "auth_url" {
-  description = "The Identity authentication URL"
-  default = "https://vio-sea.pdsea.f5net.com:5000/v3"
-}
-variable "availability_zone" {
-  description = "The availability zone in which to create the server"
-  default = "nova"
+  description = "The name of the openstack network to use as the BIG-IP Next external network."
 }
 variable "mbip_name_prefix" {
-  description = "Name prefix for mbip instances"
-}
-variable "mbip_release" {
-  description = "The mbip release to get the latest image for"
+  description = "The name prefix for BIG-IP Next instances."
 }
 variable "mbip_image_name" {
-  description = "The image name in VIO."
+  description = "The openstack image name to use for creating BIG-IP Next instances or latest."
   default = "latest"
 }
-variable "mbip_flavor_name" {
-  description = "The flavor preset in VIO."
+variable "mbip_release" {
+  description = "The BIG-IP Next release to get the latest image for."
 }
 variable "num_mbips" {
-  description = "Number of mbip instances to create"
-}
-variable "password" {
-  description = "The Password to login with."
-  sensitive = true
-}
-variable "user_name" {
-  description = "The Username to login with"
-  sensitive = true
-}
-variable "tenant_name" {
-  description = "The Name of the Tenant or Project to login with."
-}
-variable "create_cluster_ip" {
-  description = "Flag to indicate whether or not to create a new Cluster IP in VIO."
-  default = "no"
-}
-variable "mbip_ha_pool_name" {
-  description = "The Name of Pool to be used to create Cluster IP in VIO."
-  default = "k8s-ext"
+  description = "Number of BIG-IP Next instances to create."
 }

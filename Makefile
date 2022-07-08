@@ -5,7 +5,7 @@ TEST_OUTPUT_FILE?=$(PWD)/logs
 
 lint: ## Run go fmt and golangci-lint linters
 	goimports -w ./test
-	golangci-lint run ./test
+	golangci-lint run --timeout 5m ./test
 	tflint
 	tflint ./test
 
