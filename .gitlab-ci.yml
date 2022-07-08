@@ -1,7 +1,7 @@
 variables:
   MBIQ_CI_DOCKER_DIR: "artifactory.f5net.com/f5-bigiq-docker/mbiq-tools"
-  MBIQ_CI_DOCKER_TERRAFORM: "${MBIQ_CI_DOCKER_DIR}/terraform-runner:3.0.1"
-  MBIQ_CI_TERRATEST_VERSION: "0.32.23"
+  MBIQ_CI_DOCKER_TERRAFORM: "${MBIQ_CI_DOCKER_DIR}/terraform-runner:4.0.0"
+  MBIQ_CI_TERRATEST_VERSION: "0.38.8"
 
 default:
   image: "${MBIQ_CI_DOCKER_TERRAFORM}"
@@ -44,19 +44,19 @@ test:
     - chmod +x /usr/local/bin/terratest_log_parser
   script:
     - export TF_VAR_auth_url="https://vio-sea.pdsea.f5net.com:5000/v3"
+    - export TF_VAR_username="${MBIQ_DEMO_VIO_ACCT_USR}"
+    - export TF_VAR_password="${MBIQ_DEMO_VIO_ACCT_PWD}"
+    - export TF_VAR_tenant_name="verizon-dcd"
+    - export TF_VAR_mbip_flavor_name="m1.large"
     - export TF_VAR_admin_network_name="AdminNetwork2"
+    - export TF_VAR_network_port_names="[\"mgmt-2\"]"
+    - export TF_VAR_network_port_ips="10.145.64.156"
     - export TF_VAR_internal_network_name="vlan1010"
     - export TF_VAR_external_network_name="vlan1011"
     - export TF_VAR_mbip_name_prefix="${CI_PROJECT_NAME}-${CI_PIPELINE_ID}"
-    - export TF_VAR_num_mbips=1
-    - export TF_VAR_mbip_release="0.7.0"
     - export TF_VAR_mbip_image_name="latest"
-    - export TF_VAR_mbip_flavor_name="m1.large"
-    - export TF_VAR_tenant_name="verizon-dcd"
-    - export TF_VAR_user_name="${MBIQ_DEMO_VIO_ACCT_USR}"
-    - export TF_VAR_password="${MBIQ_DEMO_VIO_ACCT_PWD}"
-    - export TF_VAR_network_port_name="[\"mgmt-2\"]"
-    - export TF_VAR_network_port_ip="10.145.64.156"
+    - export TF_VAR_mbip_release="0.7.0"
+    - export TF_VAR_num_mbips=1
     - make test TEST_OUTPUT_FILE=${MBIQ_CI_TEST_OUTPUT_FILE}
   after_script:
     - terratest_log_parser -testlog ${MBIQ_CI_TEST_OUTPUT_FILE} -outputdir ${MBIQ_CI_TEST_OUTPUT_DIR}

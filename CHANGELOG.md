@@ -1,3 +1,9 @@
+# [0.5.0](https://gitswarm.f5net.com/terraform/modules/openstack/mbip/-/compare/v0.4.0...v0.5.0) (2022-07-08)
+- Update required terraform version to 1.2.4
+- Update openstack provider version to 1.47.0
+- Remove functionality for creating floating IP addresses
+- Clean up variable names and descriptions
+
 # [0.4.0](https://gitswarm.f5net.com/terraform/modules/openstack/mbip/-/compare/v0.3.2...v0.4.0) (2022-06-08)
 - Add support for specifying the BIG-IP Next release to use when finding the latest image
 - Upgrade to terraform-runner version 3.0.1 to get the new VIO client that fetches the new BIG-IP Next k3s images
