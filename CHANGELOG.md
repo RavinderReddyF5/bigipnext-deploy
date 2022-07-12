@@ -1,3 +1,6 @@
+# [0.5.1](https://gitswarm.f5net.com/terraform/modules/openstack/mbip/-/compare/v0.5.0...v0.5.1) (2022-07-12)
+- Set OS_AUTH_URL when getting the latest image from openstack
+
 # [0.5.0](https://gitswarm.f5net.com/terraform/modules/openstack/mbip/-/compare/v0.4.0...v0.5.0) (2022-07-08)
 - Update required terraform version to 1.2.4
 - Update openstack provider version to 1.47.0
