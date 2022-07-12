@@ -21,7 +21,7 @@ provider "openstack" {
 data "external" "mbip_images" {
   count = var.mbip_image_name == "latest" ? 1 : 0
 
-  program = ["${path.module}/get_latest_image.sh", var.username, var.password, var.tenant_name, var.mbip_release]
+  program = ["${path.module}/get_latest_image.sh", var.auth_url, var.username, var.password, var.tenant_name, var.mbip_release]
 }
 
 data "openstack_images_image_v2" "latest_mbip_image" {

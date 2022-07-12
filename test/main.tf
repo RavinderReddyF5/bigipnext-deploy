@@ -4,6 +4,7 @@ terraform {
 
 module "mbip" {
   source                = "./.."
+  auth_url              = var.auth_url
   username              = var.username
   password              = var.password
   tenant_name           = var.tenant_name
