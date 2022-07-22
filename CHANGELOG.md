@@ -1,3 +1,6 @@
+# [0.6.0](https://gitswarm.f5net.com/terraform/modules/openstack/mbip/-/compare/v0.5.1...v0.6.0) (2022-07-22)
+- Configure internal and external network self IPs by creating ports with fixed IPs
+
 # [0.5.1](https://gitswarm.f5net.com/terraform/modules/openstack/mbip/-/compare/v0.5.0...v0.5.1) (2022-07-12)
 - Set OS_AUTH_URL when getting the latest image from openstack
 
