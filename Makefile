@@ -11,7 +11,7 @@ lint: ## Run go fmt and golangci-lint linters
 
 test: ## Run tests
 	mkdir -p $(dir $(TEST_OUTPUT_FILE))
-	go test -timeout 60m -v ./test | tee $(TEST_OUTPUT_FILE)
+	go test -count=1 -timeout 60m -v ./test | tee $(TEST_OUTPUT_FILE)
 
 help: ## Display this help screen
 	@grep -h -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'

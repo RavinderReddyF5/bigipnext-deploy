@@ -32,15 +32,57 @@ data "openstack_images_image_v2" "latest_mbip_image" {
 }
 
 data "openstack_networking_network_v2" "admin_network" {
-  count = var.admin_network_name == "" ? 0 : 1
-
   name  = var.admin_network_name
+}
+
+data "openstack_networking_network_v2" "internal_network" {
+  name  = var.internal_network_name
+}
+
+data "openstack_networking_subnet_v2" "internal_network_subnet" {
+  name = var.internal_network_subnet_name
+  network_id = data.openstack_networking_network_v2.internal_network.id
+}
+
+data "openstack_networking_network_v2" "external_network" {
+  name  = var.external_network_name
+}
+
+data "openstack_networking_subnet_v2" "external_network_subnet" {
+  name = var.external_network_subnet_name
+  network_id = data.openstack_networking_network_v2.external_network.id
 }
 
 data "openstack_networking_port_v2" "network_port" {
   count = length(var.network_port_names)
 
   name  = var.network_port_names[count.index]
+}
+
+resource "openstack_networking_port_v2" "internal" {
+  count = var.num_mbips
+
+  name = "${var.mbip_name_prefix}-${count.index + 1}-internal"
+  network_id = data.openstack_networking_network_v2.internal_network.id
+  admin_state_up = true
+  port_security_enabled = false
+  fixed_ip {
+    subnet_id = data.openstack_networking_subnet_v2.internal_network_subnet.id
+    ip_address = var.internal_ip_addresses[count.index]
+  }
+}
+
+resource "openstack_networking_port_v2" "external" {
+  count = var.num_mbips
+
+  name = "${var.mbip_name_prefix}-${count.index + 1}-external"
+  network_id = data.openstack_networking_network_v2.external_network.id
+  admin_state_up = true
+  port_security_enabled = false
+  fixed_ip {
+    subnet_id = data.openstack_networking_subnet_v2.external_network_subnet.id
+    ip_address = var.external_ip_addresses[count.index]
+  }
 }
 
 resource "openstack_compute_instance_v2" "mbip" {
@@ -52,13 +94,13 @@ resource "openstack_compute_instance_v2" "mbip" {
   flavor_name       = var.mbip_flavor_name
   security_groups   = []
   network {
-    uuid = length(var.network_port_names) == 0 ? data.openstack_networking_network_v2.admin_network.0.id : null
+    uuid = length(var.network_port_names) == 0 ? data.openstack_networking_network_v2.admin_network.id : null
     port = length(var.network_port_names) == 0 ? null : data.openstack_networking_port_v2.network_port[count.index].id
   }
   network {
-    name = var.internal_network_name
+    port = openstack_networking_port_v2.internal[count.index].id
   }
   network {
-    name = var.external_network_name
+    port = openstack_networking_port_v2.external[count.index].id
   }
 }

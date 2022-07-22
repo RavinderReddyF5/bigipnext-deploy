@@ -32,8 +32,24 @@ variable "network_port_names" {
 variable "internal_network_name" {
   description = "The name of the openstack network to use as the BIG-IP Next internal network."
 }
+variable "internal_network_subnet_name" {
+  description = "The subnet to use for the BIG-IP Next internal network."
+}
+variable "internal_ip_addresses" {
+  description = "List of IP addresses to configure on the BIG-IP Next internal network."
+  type = list(string)
+  default = []
+}
 variable "external_network_name" {
   description = "The name of the openstack network to use as the BIG-IP Next external network."
+}
+variable "external_network_subnet_name" {
+  description = "The subnet to use for the BIG-IP Next external network."
+}
+variable "external_ip_addresses" {
+  description = "List of IP addresses to configure on the BIG-IP Next external network."
+  type = list(string)
+  default = []
 }
 variable "mbip_name_prefix" {
   description = "The name prefix for BIG-IP Next instances."
