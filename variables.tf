@@ -51,6 +51,19 @@ variable "external_ip_addresses" {
   type = list(string)
   default = []
 }
+variable "ha_data_plane_network_name" {
+  description = "The name of the openstack network to use as the BIG-IP Next HA data plane network."
+  default = ""
+}
+variable "ha_data_plane_network_subnet_name" {
+  description = "The subnet to use for the BIG-IP Next HA data plane network."
+  default = ""
+}
+variable "ha_data_plane_ip_addresses" {
+  description = "List of IP addresses to configure on the BIG-IP Next HA data plane network."
+  type = list(string)
+  default = []
+}
 variable "mbip_name_prefix" {
   description = "The name prefix for BIG-IP Next instances."
 }

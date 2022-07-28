@@ -53,6 +53,19 @@ data "openstack_networking_subnet_v2" "external_network_subnet" {
   network_id = data.openstack_networking_network_v2.external_network.id
 }
 
+data "openstack_networking_network_v2" "ha_data_plane_network" {
+  count = var.ha_data_plane_network_name == "" ? 0 : 1
+
+  name  = var.ha_data_plane_network_name
+}
+
+data "openstack_networking_subnet_v2" "ha_data_plane_network_subnet" {
+  count = var.ha_data_plane_network_name == "" ? 0 : 1
+
+  name = var.ha_data_plane_network_subnet_name
+  network_id = data.openstack_networking_network_v2.ha_data_plane_network.0.id
+}
+
 data "openstack_networking_port_v2" "network_port" {
   count = length(var.network_port_names)
 
@@ -85,6 +98,19 @@ resource "openstack_networking_port_v2" "external" {
   }
 }
 
+resource "openstack_networking_port_v2" "ha_data_plane" {
+  count = var.ha_data_plane_network_name == "" ? 0 : var.num_mbips
+
+  name = "${var.mbip_name_prefix}-${count.index + 1}-ha-data-plane"
+  network_id = data.openstack_networking_network_v2.ha_data_plane_network.0.id
+  admin_state_up = true
+  port_security_enabled = false
+  fixed_ip {
+    subnet_id = data.openstack_networking_subnet_v2.ha_data_plane_network_subnet.0.id
+    ip_address = var.ha_data_plane_ip_addresses[count.index]
+  }
+}
+
 resource "openstack_compute_instance_v2" "mbip" {
   count             = var.num_mbips
   region            = ""
@@ -102,5 +128,11 @@ resource "openstack_compute_instance_v2" "mbip" {
   }
   network {
     port = openstack_networking_port_v2.external[count.index].id
+  }
+  dynamic "network" {
+    for_each = var.ha_data_plane_network_name == "" ? [] : [1]
+    content {
+      port = openstack_networking_port_v2.ha_data_plane[count.index].id
+    }
   }
 }

@@ -1,3 +1,6 @@
+# [0.6.1](https://gitswarm.f5net.com/terraform/modules/openstack/mbip/-/compare/v0.6.0...v0.6.1) (2022-07-28)
+- Add third interface for the HA data plane VLAN
+
 # [0.6.0](https://gitswarm.f5net.com/terraform/modules/openstack/mbip/-/compare/v0.5.1...v0.6.0) (2022-07-22)
 - Configure internal and external network self IPs by creating ports with fixed IPs
 
