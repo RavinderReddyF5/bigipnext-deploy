@@ -7,3 +7,6 @@ output "internal_ipv4_addresses" {
 output "external_ipv4_addresses" {
     value = flatten(openstack_networking_port_v2.external[*].fixed_ip[*].ip_address)
 }
+output "ha_data_plane_ipv4_addresses" {
+    value = var.ha_data_plane_network_name == "" ? [] : flatten(openstack_networking_port_v2.ha_data_plane[*].fixed_ip[*].ip_address)
+}

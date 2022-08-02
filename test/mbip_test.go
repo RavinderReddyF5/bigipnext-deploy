@@ -31,6 +31,9 @@ var (
 		`TF_VAR_external_network_name`,
 		`TF_VAR_external_network_subnet_name`,
 		`TF_VAR_external_ip_addresses`,
+		`TF_VAR_ha_data_plane_network_name`,
+		`TF_VAR_ha_data_plane_network_subnet_name`,
+		`TF_VAR_ha_data_plane_ip_addresses`,
 		`TF_VAR_mbip_name_prefix`,
 		`TF_VAR_mbip_image_name`,
 		`TF_VAR_mbip_release`,
@@ -98,6 +101,7 @@ func TestTerraformSingleMBIP(t *testing.T) {
 	envVars[`TF_VAR_network_port_names`] = `[]`
 	expectedInternalIp := selfIpRegex.FindAllString(envVars[`TF_VAR_internal_ip_addresses`], -1)[0]
 	expectedExternalIp := selfIpRegex.FindAllString(envVars[`TF_VAR_external_ip_addresses`], -1)[0]
+	expectedHADataPlaneIp := selfIpRegex.FindAllString(envVars[`TF_VAR_ha_data_plane_ip_addresses`], -1)[0]
 
 	terraformOptions := terraform.WithDefaultRetryableErrors(t, &terraform.Options{
 		TerraformDir: ".",
@@ -121,6 +125,11 @@ func TestTerraformSingleMBIP(t *testing.T) {
 	assert.Len(t, externalIps, 1)
 	assert.Regexp(t, ipRegexp, externalIps[0])
 	assert.Equal(t, expectedExternalIp, externalIps[0])
+
+	haDataPlaneIps := terraform.OutputList(t, terraformOptions, "ha_data_plane_ipv4_addresses")
+	assert.Len(t, haDataPlaneIps, 1)
+	assert.Regexp(t, ipRegexp, haDataPlaneIps[0])
+	assert.Equal(t, expectedHADataPlaneIp, haDataPlaneIps[0])
 }
 
 func TestTerraformMultipleMBIP(t *testing.T) {
@@ -129,8 +138,10 @@ func TestTerraformMultipleMBIP(t *testing.T) {
 	envVars[`TF_VAR_network_port_names`] = `[]`
 	envVars[`TF_VAR_internal_ip_addresses`] = `["10.1.255.1", "10.1.255.2"]`
 	envVars[`TF_VAR_external_ip_addresses`] = `["10.2.255.1", "10.2.255.2"]`
+	envVars[`TF_VAR_ha_data_plane_ip_addresses`] = `["10.3.255.1", "10.3.255.2"]`
 	expectedInternalIps := selfIpRegex.FindAllString(envVars[`TF_VAR_internal_ip_addresses`], -1)
 	expectedExternalIps := selfIpRegex.FindAllString(envVars[`TF_VAR_external_ip_addresses`], -1)
+	expectedHADataPlaneIps := selfIpRegex.FindAllString(envVars[`TF_VAR_ha_data_plane_ip_addresses`], -1)
 
 	terraformOptions := terraform.WithDefaultRetryableErrors(t, &terraform.Options{
 		TerraformDir: ".",
@@ -160,12 +171,20 @@ func TestTerraformMultipleMBIP(t *testing.T) {
 		assert.Regexp(t, ipRegexp, externalIp)
 		assert.Equal(t, expectedExternalIps[i], externalIp)
 	}
+
+	haDataPlaneIps := terraform.OutputList(t, terraformOptions, "ha_data_plane_ipv4_addresses")
+	assert.Len(t, haDataPlaneIps, 2)
+	for i, haDataPlaneIp := range haDataPlaneIps {
+		assert.Regexp(t, ipRegexp, haDataPlaneIp)
+		assert.Equal(t, expectedHADataPlaneIps[i], haDataPlaneIp)
+	}
 }
 
 func TestTerraformSpecificMBIPImage(t *testing.T) {
 	envVars := getEnvVars()
 	envVars[`TF_VAR_mbip_image_name`] = getOldestImage(t, envVars)
 	envVars[`TF_VAR_network_port_names`] = `[]`
+	envVars[`TF_VAR_ha_data_plane_network_name`] = ``
 	expectedInternalIp := selfIpRegex.FindAllString(envVars[`TF_VAR_internal_ip_addresses`], -1)[0]
 	expectedExternalIp := selfIpRegex.FindAllString(envVars[`TF_VAR_external_ip_addresses`], -1)[0]
 
@@ -191,11 +210,15 @@ func TestTerraformSpecificMBIPImage(t *testing.T) {
 	assert.Len(t, externalIps, 1)
 	assert.Regexp(t, ipRegexp, externalIps[0])
 	assert.Equal(t, expectedExternalIp, externalIps[0])
+
+	haDataPlaneIps := terraform.OutputList(t, terraformOptions, "ha_data_plane_ipv4_addresses")
+	assert.Len(t, haDataPlaneIps, 0)
 }
 
 func TestTerraformFixedIpMBIP(t *testing.T) {
 	envVars := getEnvVars()
 	portIps := strings.Split(envVars[`TF_VAR_network_port_ips`], ",")
+	envVars[`TF_VAR_ha_data_plane_network_name`] = ``
 	expectedInternalIp := selfIpRegex.FindAllString(envVars[`TF_VAR_internal_ip_addresses`], -1)[0]
 	expectedExternalIp := selfIpRegex.FindAllString(envVars[`TF_VAR_external_ip_addresses`], -1)[0]
 
@@ -221,4 +244,7 @@ func TestTerraformFixedIpMBIP(t *testing.T) {
 	assert.Len(t, externalIps, 1)
 	assert.Regexp(t, ipRegexp, externalIps[0])
 	assert.Equal(t, expectedExternalIp, externalIps[0])
+
+	haDataPlaneIps := terraform.OutputList(t, terraformOptions, "ha_data_plane_ipv4_addresses")
+	assert.Len(t, haDataPlaneIps, 0)
 }

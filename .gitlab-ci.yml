@@ -17,10 +17,11 @@ workflow:
     - if: '$CI_MERGE_REQUEST_IID'
     # For `master` branch, create a pipeline
     - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
-    # For tags, create a pipeline
-    - if: '$CI_COMMIT_TAG'
     # For web ui, create a pipeline
     - if: '$CI_PIPELINE_SOURCE == "web"'
+    # For tags, don't create a pipeline
+    - if: '$CI_COMMIT_TAG'
+      when: never
 
 stages:
   - static-analysis
@@ -57,6 +58,9 @@ test:
     - export TF_VAR_external_network_name="BIG-IP Next External Network"
     - export TF_VAR_external_network_subnet_name="external-subnet"
     - export TF_VAR_external_ip_addresses="[\"10.2.255.1\"]"
+    - export TF_VAR_ha_data_plane_network_name="BIG-IP Next HA Network"
+    - export TF_VAR_ha_data_plane_network_subnet_name="ha-data-plane-subnet"
+    - export TF_VAR_ha_data_plane_ip_addresses="[\"10.3.255.1\"]"
     - export TF_VAR_mbip_name_prefix="${CI_PROJECT_NAME}-${CI_PIPELINE_ID}"
     - export TF_VAR_mbip_image_name="latest"
     - export TF_VAR_mbip_release="0.7.0"
