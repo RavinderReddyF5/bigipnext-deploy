@@ -1,3 +1,6 @@
+# [0.6.2](https://gitswarm.f5net.com/terraform/modules/openstack/mbip/-/compare/v0.6.1...v0.6.2) (2022-09-11)
+- Expose mbip image name on TF output
+
 # [0.6.1](https://gitswarm.f5net.com/terraform/modules/openstack/mbip/-/compare/v0.6.0...v0.6.1) (2022-07-28)
 - Add third interface for the HA data plane VLAN
 
