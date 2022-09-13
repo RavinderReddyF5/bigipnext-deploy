@@ -72,12 +72,13 @@ module "mbip" {
 
 ## Output
 
-| Name                         | Description                                          | Type |
-|------------------------------|------------------------------------------------------|------|
-| admin_ipv4_addresses         | The list of BIG-IP Next admin ipv4 addresses         | list |
-| internal_ipv4_addresses      | The list of BIG-IP Next internal ipv4 addresses      | list |
-| external_ipv4_addresses      | The list of BIG-IP Next external ipv4 addresses      | list |
-| ha_data_plane_ipv4_addresses | The list of BIG-IP Next HA data plane ipv4 addresses | list |
+| Name                         | Description                                          | Type   |
+|------------------------------|------------------------------------------------------|--------|
+| admin_ipv4_addresses         | The list of BIG-IP Next admin ipv4 addresses         | list   |
+| internal_ipv4_addresses      | The list of BIG-IP Next internal ipv4 addresses      | list   |
+| external_ipv4_addresses      | The list of BIG-IP Next external ipv4 addresses      | list   |
+| ha_data_plane_ipv4_addresses | The list of BIG-IP Next HA data plane ipv4 addresses | list   |
+| admin_instance_image         | The name of the image used for VM creation           | string |
 
 ## Testing
 

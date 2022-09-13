@@ -16,6 +16,7 @@ import (
 var (
 	ipRegexp    = regexp.MustCompile(`\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}`)
 	selfIpRegex = regexp.MustCompile(`(\d+\.?){4}`)
+	imageRegex  = regexp.MustCompile(`^BIG-IP-Next-((\d+\.?){3})-((\d+\.?){3})$`)
 	envVarNames = []string{
 		`TF_VAR_auth_url`,
 		`TF_VAR_username`,
@@ -130,6 +131,9 @@ func TestTerraformSingleMBIP(t *testing.T) {
 	assert.Len(t, haDataPlaneIps, 1)
 	assert.Regexp(t, ipRegexp, haDataPlaneIps[0])
 	assert.Equal(t, expectedHADataPlaneIp, haDataPlaneIps[0])
+
+	image := terraform.Output(t, terraformOptions, "admin_instance_image")
+	assert.Regexp(t, imageRegex, image)
 }
 
 func TestTerraformMultipleMBIP(t *testing.T) {
@@ -178,11 +182,15 @@ func TestTerraformMultipleMBIP(t *testing.T) {
 		assert.Regexp(t, ipRegexp, haDataPlaneIp)
 		assert.Equal(t, expectedHADataPlaneIps[i], haDataPlaneIp)
 	}
+
+	image := terraform.Output(t, terraformOptions, "admin_instance_image")
+	assert.Regexp(t, imageRegex, image)
 }
 
 func TestTerraformSpecificMBIPImage(t *testing.T) {
 	envVars := getEnvVars()
-	envVars[`TF_VAR_mbip_image_name`] = getOldestImage(t, envVars)
+	specificImageName := getOldestImage(t, envVars)
+	envVars[`TF_VAR_mbip_image_name`] = specificImageName
 	envVars[`TF_VAR_network_port_names`] = `[]`
 	envVars[`TF_VAR_ha_data_plane_network_name`] = ``
 	expectedInternalIp := selfIpRegex.FindAllString(envVars[`TF_VAR_internal_ip_addresses`], -1)[0]
@@ -213,6 +221,9 @@ func TestTerraformSpecificMBIPImage(t *testing.T) {
 
 	haDataPlaneIps := terraform.OutputList(t, terraformOptions, "ha_data_plane_ipv4_addresses")
 	assert.Len(t, haDataPlaneIps, 0)
+
+	image := terraform.Output(t, terraformOptions, "admin_instance_image")
+	assert.Equal(t, specificImageName, image)
 }
 
 func TestTerraformFixedIpMBIP(t *testing.T) {
@@ -247,4 +258,7 @@ func TestTerraformFixedIpMBIP(t *testing.T) {
 
 	haDataPlaneIps := terraform.OutputList(t, terraformOptions, "ha_data_plane_ipv4_addresses")
 	assert.Len(t, haDataPlaneIps, 0)
+
+	image := terraform.Output(t, terraformOptions, "admin_instance_image")
+	assert.Regexp(t, imageRegex, image)
 }

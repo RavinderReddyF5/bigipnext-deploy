@@ -1,6 +1,6 @@
 variables:
   MBIQ_CI_DOCKER_DIR: "artifactory.f5net.com/f5-bigiq-docker/mbiq-tools"
-  MBIQ_CI_DOCKER_TERRAFORM: "${MBIQ_CI_DOCKER_DIR}/terraform-runner:4.0.0"
+  MBIQ_CI_DOCKER_TERRAFORM: "${MBIQ_CI_DOCKER_DIR}/terraform-runner:4.1.1"
   MBIQ_CI_TERRATEST_VERSION: "0.38.8"
 
 default:
