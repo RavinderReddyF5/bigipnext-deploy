@@ -73,9 +73,9 @@ func getOldestImage(t *testing.T, envVars map[string]string) string {
 		t.Fatalf("Failed to log in to openstack: %s", err)
 	}
 
-	t.Logf("Querying available BIG-IP Next images for the 0.8.0 release")
+	t.Logf("Querying available BIG-IP Next images for the 0.7.0 release")
 
-	image.UpdateRegexesForRelease("0.8.0")
+	image.UpdateRegexesForRelease("0.7.0")
 	mbipImages, err := imageManager.GetAllImages(&image.ListOpts{
 		Regex:          image.MBIPRegex,
 		VersionFunc:    image.MBIPVersion,
@@ -189,8 +189,8 @@ func TestTerraformMultipleMBIP(t *testing.T) {
 
 func TestTerraformSpecificMBIPImage(t *testing.T) {
 	envVars := getEnvVars()
-	specificImageURL := getOldestImage(t, envVars)
-	envVars[`TF_VAR_mbip_image_name`] = specificImageURL
+	specificImageName := getOldestImage(t, envVars)
+	envVars[`TF_VAR_mbip_image_name`] = specificImageName
 	envVars[`TF_VAR_network_port_names`] = `[]`
 	envVars[`TF_VAR_ha_data_plane_network_name`] = ``
 	expectedInternalIp := selfIpRegex.FindAllString(envVars[`TF_VAR_internal_ip_addresses`], -1)[0]
@@ -223,7 +223,7 @@ func TestTerraformSpecificMBIPImage(t *testing.T) {
 	assert.Len(t, haDataPlaneIps, 0)
 
 	image := terraform.Output(t, terraformOptions, "admin_instance_image")
-	assert.Equal(t, specificImageURL, image)
+	assert.Equal(t, specificImageName, image)
 }
 
 func TestTerraformFixedIpMBIP(t *testing.T) {
