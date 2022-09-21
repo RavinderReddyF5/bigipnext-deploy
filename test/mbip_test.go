@@ -96,6 +96,36 @@ func getOldestImage(t *testing.T, envVars map[string]string) string {
 	return mbipImageName
 }
 
+func TestTerraformZeroMBIP(t *testing.T) {
+	envVars := getEnvVars()
+	envVars[`TF_VAR_num_mbips`] = `0`
+	envVars[`TF_VAR_network_port_names`] = `[]`
+
+	terraformOptions := terraform.WithDefaultRetryableErrors(t, &terraform.Options{
+		TerraformDir: ".",
+		EnvVars:      envVars,
+	})
+
+	defer terraform.Destroy(t, terraformOptions)
+
+	terraform.InitAndApply(t, terraformOptions)
+
+	ips := terraform.OutputList(t, terraformOptions, "admin_ipv4_addresses")
+	assert.Len(t, ips, 0)
+
+	internalIps := terraform.OutputList(t, terraformOptions, "internal_ipv4_addresses")
+	assert.Len(t, internalIps, 0)
+
+	externalIps := terraform.OutputList(t, terraformOptions, "external_ipv4_addresses")
+	assert.Len(t, externalIps, 0)
+
+	haDataPlaneIps := terraform.OutputList(t, terraformOptions, "ha_data_plane_ipv4_addresses")
+	assert.Len(t, haDataPlaneIps, 0)
+
+	_, err := terraform.OutputE(t, terraformOptions, "admin_instance_image")
+	assert.ErrorContains(t, err, `Error: Output "admin_instance_image" not found`)
+}
+
 func TestTerraformSingleMBIP(t *testing.T) {
 	envVars := getEnvVars()
 	envVars[`TF_VAR_num_mbips`] = `1`
