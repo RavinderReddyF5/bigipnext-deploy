@@ -1,9 +1,27 @@
 terraform {
+  required_version = "~> 1.2.4"
   backend "local" {}
+
+  required_providers {
+    openstack = {
+      source  = "terraform-provider-openstack/openstack"
+      version = "~> 1.47.0"
+    }
+  }
+}
+
+provider "openstack" {
+  auth_url    = var.auth_url
+  user_name   = var.username
+  password    = var.password
+  tenant_name = var.tenant_name
+  region      = ""
+  insecure    = true
 }
 
 module "mbip" {
   source                            = "./.."
+
   auth_url                          = var.auth_url
   username                          = var.username
   password                          = var.password

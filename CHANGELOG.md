@@ -1,3 +1,6 @@
+# [0.7.0](https://gitswarm.f5net.com/terraform/modules/openstack/mbip/-/compare/v0.6.2...v0.7.0) (2022-09-21)
+- Upgrade module to the new style by removing provider configuration
+
 # [0.6.2](https://gitswarm.f5net.com/terraform/modules/openstack/mbip/-/compare/v0.6.1...v0.6.2) (2022-09-11)
 - Expose mbip image name on TF output
 

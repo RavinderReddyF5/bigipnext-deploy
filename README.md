@@ -18,6 +18,22 @@ terraform {
     container_name       = "mbiq-demo-tfstate"
     key                  = "mbiq-demos-mbip-demo.tfstate"
   }
+
+  required_providers {
+    openstack = {
+      source  = "terraform-provider-openstack/openstack"
+      version = "~> 1.47.0"
+    }
+  }
+}
+
+provider "openstack" {
+  auth_url    = var.auth_url
+  user_name   = var.username
+  password    = var.password
+  tenant_name = var.tenant_name
+  region      = ""
+  insecure    = true
 }
 
 module "mbip" {
