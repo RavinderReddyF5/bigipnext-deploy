@@ -1,4 +1,4 @@
-# [0.7.0](https://gitswarm.f5net.com/terraform/modules/openstack/mbip/-/compare/v0.6.2...v0.7.0) (2022-09-21)
+# [0.7.0](https://gitswarm.f5net.com/terraform/modules/openstack/mbip/-/compare/v0.6.2...v0.7.0) (2022-09-22)
 - Upgrade module to the new style by removing provider configuration
 - Fix admin_instance_image output to not cause errors when num_mbips is 0
 

@@ -90,8 +90,10 @@ prep-release:
     - APPLICATION_VERSION=`head -1 CHANGELOG.md | sed -nr 's/.*(([0-9]+\.){2}[0-9]+).*$/\1/p'`
     - DESCRIPTION=`awk '/^$/{exit}; p; /^#/{p=1}' CHANGELOG.md`
     - echo "APPLICATION_VERSION=${APPLICATION_VERSION}" >> release.env
-    - echo "DESCRIPTION=${DESCRIPTION}" >> release.env
+    - echo "## Changes\n${DESCRIPTION}" >> description.txt
   artifacts:
+    paths:
+      - description.txt
     reports:
       dotenv: release.env
 
@@ -106,5 +108,5 @@ release:
     - echo "Creating ${APPLICATION_VERSION} Release"
   release:
     name: "${APPLICATION_VERSION}"
-    description: "## Changes\n${DESCRIPTION}"
+    description: "description.txt"
     tag_name: "v${APPLICATION_VERSION}"
