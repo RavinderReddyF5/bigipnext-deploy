@@ -9,15 +9,6 @@ terraform {
   }
 }
 
-provider "openstack" {
-  auth_url    = var.auth_url
-  user_name   = var.username
-  password    = var.password
-  tenant_name = var.tenant_name
-  region      = ""
-  insecure    = true
-}
-
 data "external" "mbip_images" {
   count = var.mbip_image_name == "latest" ? 1 : 0
 
