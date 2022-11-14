@@ -2,8 +2,9 @@
 
 Terraform module that creates and configures BIG-IP Next instances on OpenStack(VIO).
 
-This module creates BIG-IP Next instances with admin, internal, and external network interfaces on openstack. You need
-terraform version 1.2.4 or newer to use this module.
+This module creates BIG-IP Next instances with admin, internal, and external network interfaces on openstack.  An ssh
+user with username f5debug and password Welcome123! will be configured. The username and password can be overridden if
+desired. You need terraform version 1.2.4 or newer to use this module.
 
 The user used for authenticating with openstack must have the privileges necessary to create ports attached to a subnet
 on the internal and external networks.
@@ -57,6 +58,8 @@ module "mbip" {
   mbip_image_name              = var.mbip_image_name
   mbip_release                 = var.mbip_release
   num_mbips                    = var.num_mbips
+  ssh_username                 = var.ssh_username
+  ssh_password                 = var.ssh_password
 }
 ```
 
@@ -85,6 +88,8 @@ module "mbip" {
 | mbip_image_name                   | The openstack image name to use for creating BIG-IP Next instances or latest.             | string |                 `"latest"`                  |    no    |
 | mbip_release                      | The BIG-IP Next release to get the latest image for.                                      | string |                      -                      |   yes    |
 | num_mbips                         | Number of BIG-IP Next instances to create.                                                | string |                      -                      |   yes    |
+| ssh_username                      | The username to configure via cloud-init for ssh access                                   | string |                   f5debug                   |    no    |
+| ssh_password                      | The password to configure via cloud-init for ssh access                                   | string |                 Welcome123!                 |    no    |
 
 ## Output
 
@@ -102,6 +107,7 @@ The golang terratest package is used for testing this terraform module. In order
 go installed and you must create a .env file in the `test` directory that configures the following environment variables
 or set all of these environment variables in your environment:
 
+```
 TF_VAR_auth_url="https://vio-sea.pdsea.f5net.com:5000/v3"
 TF_VAR_username="<VIO username>"
 TF_VAR_password="<VIO password>"
@@ -120,5 +126,6 @@ TF_VAR_ha_data_plane_ip_addresses="[\"10.3.255.1\"]"
 TF_VAR_mbip_name_prefix="cb-terraform-mbip-test"
 TF_VAR_mbip_release="0.7.0"
 TF_VAR_num_mbips=1
+```
 
 The tests can then be run using the `make test` command.

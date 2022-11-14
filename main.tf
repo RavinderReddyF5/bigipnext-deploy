@@ -110,6 +110,15 @@ resource "openstack_compute_instance_v2" "mbip" {
   image_id          = var.mbip_image_name == "latest" ? data.external.mbip_images.0.result.id : data.openstack_images_image_v2.latest_mbip_image.0.id
   flavor_name       = var.mbip_flavor_name
   security_groups   = []
+  metadata = {
+    instance-id = "${var.mbip_name_prefix}-${count.index + 1}"
+    local-hostname = "${var.mbip_name_prefix}-${count.index + 1}"
+  }
+  user_data = templatefile("${path.module}/userdata.tpl", {
+    ssh_username = var.ssh_username
+    ssh_password = var.ssh_password
+  })
+
   network {
     uuid = length(var.network_port_names) == 0 ? data.openstack_networking_network_v2.admin_network.id : null
     port = length(var.network_port_names) == 0 ? null : data.openstack_networking_port_v2.network_port[count.index].id

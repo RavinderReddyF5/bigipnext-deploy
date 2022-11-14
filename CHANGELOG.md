@@ -1,3 +1,7 @@
+# [0.8.0](https://gitswarm.f5net.com/terraform/modules/openstack/mbip/-/compare/v0.7.0...v0.8.0) (2022-11-13)
+- Add cloud-init configuration to configure the instance-id, local-hostname, and an ssh user account
+- Minimum release for BIG-IP Next images is now 0.9.0
+
 # [0.7.0](https://gitswarm.f5net.com/terraform/modules/openstack/mbip/-/compare/v0.6.2...v0.7.0) (2022-09-21)
 - Upgrade module to the new style by removing provider configuration
 - Fix admin_instance_image output to not cause errors when num_mbips is 0

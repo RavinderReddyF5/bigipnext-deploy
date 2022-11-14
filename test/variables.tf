@@ -77,3 +77,11 @@ variable "mbip_release" {
 variable "num_mbips" {
   description = "Number of BIG-IP Next instances to create."
 }
+variable "ssh_username" {
+  description = "The username to configure via cloud-init for ssh access to the VM."
+  default = "f5debug"
+}
+variable "ssh_password" {
+  description = "The hashed password to configure via cloud-init for ssh access to the VM."
+  default = "Welcome123!"
+}

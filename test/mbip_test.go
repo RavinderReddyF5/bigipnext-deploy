@@ -1,16 +1,24 @@
 package test
 
 import (
+	"fmt"
 	"os"
 	"regexp"
 	"strings"
 	"testing"
+	"time"
 
+	"github.com/gruntwork-io/terratest/modules/ssh"
 	"github.com/gruntwork-io/terratest/modules/terraform"
 	"github.com/joho/godotenv"
 	"github.com/stretchr/testify/assert"
 	"gitswarm.f5net.com/bigiq-mgmt/mbiq-group/mbiq-system-team/mbiq-tools/go/vio/pkg/client"
 	"gitswarm.f5net.com/bigiq-mgmt/mbiq-group/mbiq-system-team/mbiq-tools/go/vio/pkg/image"
+)
+
+const (
+	retries    = 20
+	timeToWait = 15 * time.Second
 )
 
 var (
@@ -73,9 +81,9 @@ func getOldestImage(t *testing.T, envVars map[string]string) string {
 		t.Fatalf("Failed to log in to openstack: %s", err)
 	}
 
-	t.Logf("Querying available BIG-IP Next images for the 0.7.0 release")
+	t.Logf("Querying available BIG-IP Next images for the 0.9.0 release")
 
-	image.UpdateRegexesForRelease("0.7.0")
+	image.UpdateRegexesForRelease("0.9.0")
 	mbipImages, err := imageManager.GetAllImages(&image.ListOpts{
 		Regex:          image.MBIPRegex,
 		VersionFunc:    image.MBIPVersion,
@@ -130,6 +138,7 @@ func TestTerraformSingleMBIP(t *testing.T) {
 	envVars := getEnvVars()
 	envVars[`TF_VAR_num_mbips`] = `1`
 	envVars[`TF_VAR_network_port_names`] = `[]`
+	expectedHostname := fmt.Sprintf("%s-1", envVars[`TF_VAR_mbip_name_prefix`])
 	expectedInternalIp := selfIpRegex.FindAllString(envVars[`TF_VAR_internal_ip_addresses`], -1)[0]
 	expectedExternalIp := selfIpRegex.FindAllString(envVars[`TF_VAR_external_ip_addresses`], -1)[0]
 	expectedHADataPlaneIp := selfIpRegex.FindAllString(envVars[`TF_VAR_ha_data_plane_ip_addresses`], -1)[0]
@@ -162,13 +171,25 @@ func TestTerraformSingleMBIP(t *testing.T) {
 	assert.Regexp(t, ipRegexp, haDataPlaneIps[0])
 	assert.Equal(t, expectedHADataPlaneIp, haDataPlaneIps[0])
 
-	image := terraform.Output(t, terraformOptions, "admin_instance_image")
-	assert.Regexp(t, imageRegex, image)
+	imageName := terraform.Output(t, terraformOptions, "admin_instance_image")
+	assert.Regexp(t, imageRegex, imageName)
+
+	host := ssh.Host{
+		Hostname:    ips[0],
+		SshUserName: `f5debug`,
+		Password:    `Welcome123!`,
+	}
+	assert.NoError(t, ssh.CheckSshConnectionWithRetryE(t, host, retries, timeToWait))
+
+	hostname := ssh.CheckSshCommandWithRetry(t, host, `hostname`, retries, timeToWait)
+	assert.Equal(t, expectedHostname, strings.TrimSpace(hostname))
 }
 
 func TestTerraformMultipleMBIP(t *testing.T) {
 	envVars := getEnvVars()
 	envVars[`TF_VAR_num_mbips`] = `2`
+	envVars[`TF_VAR_ssh_username`] = `techdebt`
+	envVars[`TF_VAR_ssh_password`] = `F5site02!`
 	envVars[`TF_VAR_network_port_names`] = `[]`
 	envVars[`TF_VAR_internal_ip_addresses`] = `["10.1.255.1", "10.1.255.2"]`
 	envVars[`TF_VAR_external_ip_addresses`] = `["10.2.255.1", "10.2.255.2"]`
@@ -213,8 +234,15 @@ func TestTerraformMultipleMBIP(t *testing.T) {
 		assert.Equal(t, expectedHADataPlaneIps[i], haDataPlaneIp)
 	}
 
-	image := terraform.Output(t, terraformOptions, "admin_instance_image")
-	assert.Regexp(t, imageRegex, image)
+	imageName := terraform.Output(t, terraformOptions, "admin_instance_image")
+	assert.Regexp(t, imageRegex, imageName)
+
+	host := ssh.Host{
+		Hostname:    ips[0],
+		SshUserName: `techdebt`,
+		Password:    `F5site02!`,
+	}
+	assert.NoError(t, ssh.CheckSshConnectionWithRetryE(t, host, retries, timeToWait))
 }
 
 func TestTerraformSpecificMBIPImage(t *testing.T) {
@@ -252,8 +280,8 @@ func TestTerraformSpecificMBIPImage(t *testing.T) {
 	haDataPlaneIps := terraform.OutputList(t, terraformOptions, "ha_data_plane_ipv4_addresses")
 	assert.Len(t, haDataPlaneIps, 0)
 
-	image := terraform.Output(t, terraformOptions, "admin_instance_image")
-	assert.Equal(t, specificImageName, image)
+	imageName := terraform.Output(t, terraformOptions, "admin_instance_image")
+	assert.Equal(t, specificImageName, imageName)
 }
 
 func TestTerraformFixedIpMBIP(t *testing.T) {
@@ -289,6 +317,6 @@ func TestTerraformFixedIpMBIP(t *testing.T) {
 	haDataPlaneIps := terraform.OutputList(t, terraformOptions, "ha_data_plane_ipv4_addresses")
 	assert.Len(t, haDataPlaneIps, 0)
 
-	image := terraform.Output(t, terraformOptions, "admin_instance_image")
-	assert.Regexp(t, imageRegex, image)
+	imageName := terraform.Output(t, terraformOptions, "admin_instance_image")
+	assert.Regexp(t, imageRegex, imageName)
 }
