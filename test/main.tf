@@ -27,6 +27,7 @@ module "mbip" {
   password                          = var.password
   availability_zone                 = var.availability_zone
   tenant_name                       = var.tenant_name
+  destroy                           = var.destroy
   mbip_flavor_name                  = var.mbip_flavor_name
   admin_network_name                = var.admin_network_name
   network_port_names                = var.network_port_names

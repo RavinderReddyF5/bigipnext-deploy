@@ -1,6 +1,7 @@
 # [0.8.0](https://gitswarm.f5net.com/terraform/modules/openstack/mbip/-/compare/v0.7.0...v0.8.0) (2022-11-13)
 - Add cloud-init configuration to configure the instance-id, local-hostname, and an ssh user account
 - Minimum release for BIG-IP Next images is now 0.9.0
+- Add destroy variable that can be used to skip unnecessary steps on destroy
 
 # [0.7.0](https://gitswarm.f5net.com/terraform/modules/openstack/mbip/-/compare/v0.6.2...v0.7.0) (2022-09-21)
 - Upgrade module to the new style by removing provider configuration

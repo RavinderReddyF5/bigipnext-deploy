@@ -104,6 +104,18 @@ func getOldestImage(t *testing.T, envVars map[string]string) string {
 	return mbipImageName
 }
 
+func createDestroyOptionsFromOptions(t *testing.T, terraformOptions *terraform.Options) *terraform.Options {
+	terraformDestroyOptions, err := terraformOptions.Clone()
+	assert.NoError(t, err)
+	terraformDestroyOptions.EnvVars = make(map[string]string)
+	for k, v := range terraformOptions.EnvVars {
+		terraformDestroyOptions.EnvVars[k] = v
+	}
+	terraformDestroyOptions.EnvVars[`TF_VAR_destroy`] = `true`
+
+	return terraformDestroyOptions
+}
+
 func TestTerraformZeroMBIP(t *testing.T) {
 	envVars := getEnvVars()
 	envVars[`TF_VAR_num_mbips`] = `0`
@@ -114,7 +126,7 @@ func TestTerraformZeroMBIP(t *testing.T) {
 		EnvVars:      envVars,
 	})
 
-	defer terraform.Destroy(t, terraformOptions)
+	defer terraform.Destroy(t, createDestroyOptionsFromOptions(t, terraformOptions))
 
 	terraform.InitAndApply(t, terraformOptions)
 
@@ -148,7 +160,7 @@ func TestTerraformSingleMBIP(t *testing.T) {
 		EnvVars:      envVars,
 	})
 
-	defer terraform.Destroy(t, terraformOptions)
+	defer terraform.Destroy(t, createDestroyOptionsFromOptions(t, terraformOptions))
 
 	terraform.InitAndApply(t, terraformOptions)
 
@@ -203,7 +215,7 @@ func TestTerraformMultipleMBIP(t *testing.T) {
 		EnvVars:      envVars,
 	})
 
-	defer terraform.Destroy(t, terraformOptions)
+	defer terraform.Destroy(t, createDestroyOptionsFromOptions(t, terraformOptions))
 
 	terraform.InitAndApply(t, terraformOptions)
 
@@ -259,7 +271,7 @@ func TestTerraformSpecificMBIPImage(t *testing.T) {
 		EnvVars:      envVars,
 	})
 
-	defer terraform.Destroy(t, terraformOptions)
+	defer terraform.Destroy(t, createDestroyOptionsFromOptions(t, terraformOptions))
 
 	terraform.InitAndApply(t, terraformOptions)
 
@@ -296,7 +308,7 @@ func TestTerraformFixedIpMBIP(t *testing.T) {
 		EnvVars:      envVars,
 	})
 
-	defer terraform.Destroy(t, terraformOptions)
+	defer terraform.Destroy(t, createDestroyOptionsFromOptions(t, terraformOptions))
 
 	terraform.InitAndApply(t, terraformOptions)
 
