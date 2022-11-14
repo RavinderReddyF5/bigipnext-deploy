@@ -2,10 +2,6 @@ variable "auth_url" {
   description = "The openstack identity authentication URL."
   default = "https://vio-sea.pdsea.f5net.com:5000/v3"
 }
-variable "availability_zone" {
-  description = "The availability zone to create BIG-IP Next instances in."
-  default = "nova"
-}
 variable "username" {
   description = "The username to log in with."
   sensitive = true
@@ -16,6 +12,14 @@ variable "password" {
 }
 variable "tenant_name" {
   description = "The name of the tenant to create BIG-IP Next instances in."
+}
+variable "availability_zone" {
+  description = "The availability zone to create BIG-IP Next instances in."
+  default = "nova"
+}
+variable "destroy" {
+  description = "Whether a destroy operation is being performed."
+  default = false
 }
 variable "mbip_flavor_name" {
   description = "The openstack flavor to use when creating the BIG-IP Next instances."
@@ -76,4 +80,12 @@ variable "mbip_release" {
 }
 variable "num_mbips" {
   description = "Number of BIG-IP Next instances to create."
+}
+variable "ssh_username" {
+  description = "The username to configure via cloud-init for ssh access to the VM."
+  default = "f5debug"
+}
+variable "ssh_password" {
+  description = "The hashed password to configure via cloud-init for ssh access to the VM."
+  default = "Welcome123!"
 }

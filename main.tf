@@ -10,13 +10,13 @@ terraform {
 }
 
 data "external" "mbip_images" {
-  count = var.mbip_image_name == "latest" ? 1 : 0
+  count = var.mbip_image_name == "latest" && !var.destroy ? 1 : 0
 
   program = ["${path.module}/get_latest_image.sh", var.auth_url, var.username, var.password, var.tenant_name, var.mbip_release]
 }
 
 data "openstack_images_image_v2" "latest_mbip_image" {
-  count = var.mbip_image_name == "latest" ? 0 : 1
+  count = var.mbip_image_name == "latest" || var.destroy ? 0 : 1
 
   name        = var.mbip_image_name
   most_recent = true
@@ -107,9 +107,18 @@ resource "openstack_compute_instance_v2" "mbip" {
   region            = ""
   availability_zone = var.availability_zone
   name              = "${var.mbip_name_prefix}-${count.index + 1}"
-  image_id          = var.mbip_image_name == "latest" ? data.external.mbip_images.0.result.id : data.openstack_images_image_v2.latest_mbip_image.0.id
+  image_id          = var.destroy ? null : var.mbip_image_name == "latest" ? data.external.mbip_images.0.result.id : data.openstack_images_image_v2.latest_mbip_image.0.id
   flavor_name       = var.mbip_flavor_name
   security_groups   = []
+  metadata = {
+    instance-id = "${var.mbip_name_prefix}-${count.index + 1}"
+    local-hostname = "${var.mbip_name_prefix}-${count.index + 1}"
+  }
+  user_data = templatefile("${path.module}/userdata.tpl", {
+    ssh_username = var.ssh_username
+    ssh_password = var.ssh_password
+  })
+
   network {
     uuid = length(var.network_port_names) == 0 ? data.openstack_networking_network_v2.admin_network.id : null
     port = length(var.network_port_names) == 0 ? null : data.openstack_networking_port_v2.network_port[count.index].id

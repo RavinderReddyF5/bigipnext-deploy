@@ -27,6 +27,7 @@ module "mbip" {
   password                          = var.password
   availability_zone                 = var.availability_zone
   tenant_name                       = var.tenant_name
+  destroy                           = var.destroy
   mbip_flavor_name                  = var.mbip_flavor_name
   admin_network_name                = var.admin_network_name
   network_port_names                = var.network_port_names
@@ -43,4 +44,6 @@ module "mbip" {
   mbip_image_name                   = var.mbip_image_name
   mbip_release                      = var.mbip_release
   num_mbips                         = var.num_mbips
+  ssh_username                      = var.ssh_username
+  ssh_password                      = var.ssh_password
 }

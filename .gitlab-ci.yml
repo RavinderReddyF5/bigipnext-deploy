@@ -48,7 +48,7 @@ test:
     - export TF_VAR_username="${MBIQ_DEMO_VIO_ACCT_USR}"
     - export TF_VAR_password="${MBIQ_DEMO_VIO_ACCT_PWD}"
     - export TF_VAR_tenant_name="verizon-dcd"
-    - export TF_VAR_mbip_flavor_name="m1.large"
+    - export TF_VAR_mbip_flavor_name="m1.xlarge"
     - export TF_VAR_admin_network_name="AdminNetwork2"
     - export TF_VAR_network_port_names="[\"mgmt-2\"]"
     - export TF_VAR_network_port_ips="10.145.64.156"
@@ -63,7 +63,7 @@ test:
     - export TF_VAR_ha_data_plane_ip_addresses="[\"10.3.255.1\"]"
     - export TF_VAR_mbip_name_prefix="${CI_PROJECT_NAME}-${CI_PIPELINE_ID}"
     - export TF_VAR_mbip_image_name="latest"
-    - export TF_VAR_mbip_release="0.7.0"
+    - export TF_VAR_mbip_release="0.10.0"
     - export TF_VAR_num_mbips=1
     - make test TEST_OUTPUT_FILE=${MBIQ_CI_TEST_OUTPUT_FILE}
   after_script:
