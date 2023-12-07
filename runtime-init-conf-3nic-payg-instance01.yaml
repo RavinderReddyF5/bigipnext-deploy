@@ -1,0 +1,82 @@
+---
+controls:
+  extensionInstallDelayInMs: 60000
+runtime_parameters:
+  - name: USER_NAME
+    type: static
+    value: bigipuser
+  - name: SSH_KEYS
+    type: static
+    value: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQC65CYwTigMlzqll/1z3yQ0Yvpl27oGsXSXqTh4g2o3hPhFugxGFODjuQeZpF/1ywuG9Pcg2OCiP2vwjcyjcrOH/Sob6XufbPjnKLqi2cMFdav3LbaGE4p4eprzR0UIIVJFwB/SFGHeIJu5VgR2GPDbg3lwF+ZYKiBP4K/UJvuKAT9t0fesXeZeKaHyHNZCpl9ltGW16qivyoeMXavI5z3c3bjYOrCXOI3A2MQQJ3p7DBN3mP8es/lpKoCF7oPya5BnB125otQ3e5j9stX79LBtB5w7iQRXKUtM+ZaqhQCgKprIe+pnw33zJ08ta130nnbZqWgPUXGtCHDJ5dZV7Ggz0uHEB71ARFWHGpCdvJAKa46jQGWJC06sydP7zVNJbwWmuVcngxkpaKQ+O5v1M0WztI/7RfOxGrQQOCVs5r4zinvw+CmDQ7AhYqHrvlh4iR/yWhrayPpUlk6cxbqW1bRqxP04SoNroP6RHWbhYEd+b/dqPtR6yVVcUDaiC7mPd9ifitX4q+mc0cb182thZtsWhJ7jzkwu5KytpViT7BEn5mTt6cv/yIEd/9HIBB9cFGf8Mc2dsR++Z1GEQqyBeyjH5NmnoZnc9P/8NSEv0wtQUEGFo5LLAnxt7nego9IRjGzYRUgql30mQTc3gGc/fmQnlouqSKJVYSPP+BrYJAw/tw== r.chinthalapalli@JP27H964T7
+"
+  - name: HOST_NAME
+    type: metadata
+    metadataProvider:
+        environment: gcp
+        type: compute
+        field: name
+  - name: ADMIN_PASS
+    type: static
+    value: sQs0BjApfNly5JuN
+pre_onboard_enabled: []
+extension_packages: 
+  install_operations:
+    - extensionType: do
+      extensionVersion: v1.41.0
+      extensionUrl: https://github.com/F5Networks/f5-declarative-onboarding/releases/download/v1.41.0/f5-declarative-onboarding-1.41.0-8.noarch.rpm
+    - extensionType: as3
+      extensionVersion: v3.48.0
+      extensionUrl: https://github.com/F5Networks/f5-appsvcs-extension/releases/download/v3.48.0/f5-appsvcs-3.48.0-10.noarch.rpm
+    - extensionType: ts
+      extensionVersion: v1.33.0
+      extensionUrl: https://github.com/F5Networks/f5-telemetry-streaming/releases/download/v1.33.0/f5-telemetry-1.33.0-1.noarch.rpm
+    - extensionType: cf
+      extensionVersion: v1.15.0
+      extensionUrl: https://github.com/F5Networks/f5-cloud-failover-extension/releases/download/v1.15.0/f5-cloud-failover-1.15.0-0.noarch.rpm
+    - extensionType: fast
+      extensionVersion: v1.25.0
+      extensionUrl: https://github.com/F5Networks/f5-appsvcs-templates/releases/download/v1.25.0/f5-appsvcs-templates-1.25.0-1.noarch.rpm
+extension_services:
+  service_operations:
+    - extensionType: do
+      type: inline
+      value:
+        schemaVersion: 1.0.0
+        class: Device
+        async: true
+        Common:
+          class: Tenant
+          hostname: '{{{HOST_NAME}}}.com'
+          myNtp:
+            class: NTP
+            servers:
+              - 169.254.169.254
+            timezone: UTC
+          myDns:
+            class: DNS
+            nameServers:
+              - 169.254.169.254
+          myProvisioning:
+            class: Provision
+            ltm: nominal
+          admin:
+            class: User
+            partitionAccess:
+              all-partitions:
+                role: admin
+            password: '{{{ADMIN_PASS}}}'
+            shell: bash
+            keys:
+              - '{{{SSH_KEYS}}}'
+            userType: regular
+          '{{{USER_NAME}}}':
+            class: User
+            partitionAccess:
+              all-partitions:
+                role: admin
+            password: '{{{ADMIN_PASS}}}'
+            shell: bash
+            keys:
+              - '{{{SSH_KEYS}}}'
+            userType: regular
+post_onboard_enabled: []
